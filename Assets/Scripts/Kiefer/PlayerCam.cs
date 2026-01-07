@@ -23,12 +23,6 @@ public class PlayerCam : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        float mouseX = lookInput.x * Time.deltaTime * sensX;
-        float mouseY = lookInput.y * Time.deltaTime * sensY;
-
-        yRotation += mouseX;
-
-        xRotation -= mouseY;
 
         xRotation = Mathf.Clamp(xRotation, -90f, 90f);
 
@@ -39,5 +33,12 @@ public class PlayerCam : MonoBehaviour
     public void OnLook(InputAction.CallbackContext value)
     {
         lookInput = value.ReadValue<Vector2>();
+
+        float mouseX = lookInput.x * Time.deltaTime * sensX;
+        float mouseY = lookInput.y * Time.deltaTime * sensY;
+
+        yRotation += mouseX;
+
+        xRotation -= mouseY;
     }
 }
