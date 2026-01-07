@@ -23,8 +23,8 @@ public class PlayerCam : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        float mouseX = lookInput.x * sensX;
-        float mouseY = lookInput.y * sensY;
+        float mouseX = lookInput.x * sensX * 0.02f;
+        float mouseY = lookInput.y * sensY * 0.02f;
 
         yRotation += mouseX;
         xRotation -= mouseY;
