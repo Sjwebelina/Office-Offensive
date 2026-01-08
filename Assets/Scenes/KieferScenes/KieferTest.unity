@@ -622,7 +622,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMovement
   movementSpeed: 1.7
   groundDrag: 5
-  sprintSpeedMulti: 2
+  sprintSpeedMulti: 1.7
   whatIsGround:
     serializedVersion: 2
     m_Bits: 256
