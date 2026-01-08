@@ -7,18 +7,22 @@ public class PlayerMovement : MonoBehaviour
 {
     [Header("Movement")]
     [SerializeField] private float movementSpeed;
-    [SerializeField] private float staminaAmount;
 
     [SerializeField] private float groundDrag;
 
+    [Header("Sprint")]
+    //[SerializeField] private float staminaAmount;
+
+    private bool isSprinting = false;
+
+    [SerializeField] private float sprintSpeedMulti = 1;
+
     [Header("Ground Check")]
-    public float playerHeight;
-    public LayerMask whatIsGround;
+    [SerializeField] private LayerMask whatIsGround;
+    [SerializeField] private float playerHeight;
     bool grounded;
 
     [SerializeField] private Transform orientation;
-
-    Vector3 moveDirection;
 
     Rigidbody rb;
 
@@ -48,9 +52,15 @@ public class PlayerMovement : MonoBehaviour
 
     void MovePlayer()
     {
-        moveDirection = orientation.forward * moveInput.y + orientation.right * moveInput.x;
-
-        rb.AddForce(moveDirection * movementSpeed * 10f, ForceMode.Force);
+        Vector3 moveDirection = orientation.forward * moveInput.y + orientation.right * moveInput.x;
+        if (isSprinting )
+        {
+            rb.AddForce(moveDirection * movementSpeed * 10f * sprintSpeedMulti, ForceMode.Force);
+        }
+        else
+        {
+            rb.AddForce(moveDirection * movementSpeed * 10f, ForceMode.Force);
+        }
 
         SpeedControl();
     }
@@ -59,15 +69,36 @@ public class PlayerMovement : MonoBehaviour
     {
         Vector3 flatVel = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
 
-        if (flatVel.magnitude > movementSpeed)
+        float currentSpeed = isSprinting ? sprintSpeedMulti * movementSpeed : movementSpeed;
+
+        Debug.Log(currentSpeed);
+
+        if (flatVel.magnitude > currentSpeed)
         {
-            Vector3 limitedVel = flatVel.normalized * movementSpeed;
+            Vector3 limitedVel = flatVel.normalized * currentSpeed;
             rb.linearVelocity = new Vector3(limitedVel.x, rb.linearVelocity.y, limitedVel.z);
         }
     }
 
+    #region new input methodes
     public void OnMove(InputAction.CallbackContext value)
     {
         moveInput = value.ReadValue<Vector2>();
     }
+
+    public void OnSprint(InputAction.CallbackContext value)
+    {
+        if (value.phase != InputActionPhase.Started)
+        {
+            if (value.ReadValue<float>() >= 1f)
+            {
+                isSprinting = true;
+            }
+            else
+            {
+                isSprinting = false;
+            }
+        }
+    }
+    #endregion
 }
