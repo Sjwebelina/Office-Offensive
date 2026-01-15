@@ -11,11 +11,12 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float groundDrag;
 
     [Header("Sprint")]
-    //[SerializeField] private float staminaAmount;
+    [SerializeField] private float sprintSpeedMulti = 1;
 
     private bool isSprinting = false;
-
-    [SerializeField] private float sprintSpeedMulti = 1;
+    /*
+    [SerializeField] private float maxStaminaAmount;
+    float staminaAmount;*/
 
     [Header("Ground Check")]
     [SerializeField] private LayerMask whatIsGround;
@@ -28,8 +29,12 @@ public class PlayerMovement : MonoBehaviour
 
     Vector2 moveInput;
 
+    StaminaController staminaController;
+
     void Start()
     {
+        staminaController = GetComponent<StaminaController>();
+
         rb = GetComponent<Rigidbody>();
         rb.freezeRotation = true;
     }
@@ -80,6 +85,11 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    public void SetSprintingBool(bool value)
+    {
+        isSprinting = value;
+    }
+
     #region new input methodes
     public void OnMove(InputAction.CallbackContext value)
     {
@@ -92,11 +102,11 @@ public class PlayerMovement : MonoBehaviour
         {
             if (value.ReadValue<float>() >= 1f)
             {
-                isSprinting = true;
+                staminaController.CheckCanSprint();
             }
             else
             {
-                isSprinting = false;
+                staminaController.StopSprinting();
             }
         }
     }
